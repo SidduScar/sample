@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .attendance-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .attendance-table th, .attendance-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .attendance-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .attendance-table td {
+            text-align: center;
+        }
+
+        .attendance-table input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .attendance-form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .attendance-form input[type="text"] {
+            padding: 5px;
+            margin-right: 10px;
+            width: 200px;
+        }
+
+        .attendance-form button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .attendance-form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Student Attendance Tracker</h1>
+    
+    <div class="attendance-form">
+        <input type="text" id="studentName" placeholder="Enter Student Name">
+        <button onclick="addStudent()">Add Student</button>
+    </div>
+
+    <table class="attendance-table">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Present</th>
+                <th>Absent</th>
+            </tr>
+        </thead>
+        <tbody id="studentList">
+            <!-- Student rows will be added here -->
+        </tbody>
+    </table>
+
+    <script>
+        let students = [];
+
+        // Function to add student to the list
+        function addStudent() {
+            const studentName = document.getElementById("studentName").value.trim();
+            if (studentName === "") {
+                alert("Please enter a student name.");
+                return;
+            }
+
+            // Check if the student already exists
+            if (students.includes(studentName)) {
+                alert("Student already added.");
+                return;
+            }
+
+            // Add student to the list
+            students.push(studentName);
+            updateTable();
+            document.getElementById("studentName").value = ""; // Clear the input field
+        }
+
+        // Function to update the attendance table
+        function updateTable() {
+            const studentList = document.getElementById("studentList");
+            studentList.innerHTML = ""; // Clear existing rows
+
+            students.forEach((student, index) => {
+                const row = document.createElement("tr");
+
+                // Create student name cell
+                const nameCell = document.createElement("td");
+                nameCell.textContent = student;
+                row.appendChild(nameCell);
+
+                // Create Present cell with checkbox
+                const presentCell = document.createElement("td");
+                const presentCheckbox = document.createElement("input");
+                presentCheckbox.type = "checkbox";
+                presentCheckbox.setAttribute("data-index", index);
+                presentCheckbox.onclick = toggleAttendance;
+                presentCell.appendChild(presentCheckbox);
+                row.appendChild(presentCell);
+
+                // Create Absent cell with checkbox
+                const absentCell = document.createElement("td");
+                const absentCheckbox = document.createElement("input");
+                absentCheckbox.type = "checkbox";
+                absentCheckbox.setAttribute("data-index", index);
+                absentCheckbox.onclick = toggleAttendance;
+                absentCell.appendChild(absentCheckbox);
+                row.appendChild(absentCell);
+
+                studentList.appendChild(row);
+            });
+        }
+
+        // Function to toggle attendance (Present/Absent)
+        function toggleAttendance(event) {
+            const index = event.target.getAttribute("data-index");
+            const checkboxes = document.querySelectorAll(`input[data-index='${index}']`);
+
+            // If one checkbox is checked, the other should be unchecked
+            checkboxes.forEach((checkbox) => {
+                if (checkbox !== event.target) {
+                    checkbox.checked = false;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
